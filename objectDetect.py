@@ -45,16 +45,15 @@ def talker():
 	pub = rospy.Publisher('centerCoord', Vector3, queue_size=10)
 	rospy.init_node('camera', anonymous=True)
 	while not rospy.is_shutdown():
+		(xDeg, yDeg) = getImgCenter()
 		center_coord_msg = Vector3()
-		center_coord_msg.x = 
+		center_coord_msg.x = xDeg
+		center_coord_msg.y = yDeg
+		rospy.loginfo(center_coord_msg)
+		pub.publish(center_coord_msg)
 
-cap = cv2.VideoCapture(0)
-
-lowerbound = np.array([105,100,100], np.uint8)
-upperbound = np.array([127,255,255], np.uint8)
-
-while(True):
-	tick = time.time()
+def getImgCenter():
+	#tick = time.time()
 	
 	ret, frame = cap.read()	
 
@@ -66,19 +65,17 @@ while(True):
 
 	(xPrime, yPrime) = normalize(mask, cX, cY)
 	
-	FOV = getFOV(xPrime,yPrime, 62.2, 48.8)
+	(xDeg, yDeg) = getFOV(xPrime,yPrime, 62.2, 48.8)
 	
-	cv2.circle(frame,(cX,cY),50,(0,0,255),-1)
+	return (xDeg, yDeg)
 
-	print (cX, cY)
-
-	print FOV
-
-	cv2.imshow("Frame", frame)
+cap = cv2.VideoCapture(0)
+lowerbound = np.array([105, 100, 100], np.uint8)
+upperbound = np.array([127, 255, 255], np.uint8)
 	
-	tock = time.time()
 
-	print "Time to complete = " + str(tock-tick) + " sec"
-
-	cv2.waitKey(1)
-
+if __name__ == '__main__':
+	try:
+		talker()
+	except rospy.ROSInterruptException:
+		pass
