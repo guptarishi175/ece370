@@ -131,8 +131,7 @@ def talker():
 		pub.publish(center_coord_msg)
 
 def getImgCenter():
-	#tick = time.time()
-	
+
 	ret, frame = cap.read()	
 
 	imgHSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
