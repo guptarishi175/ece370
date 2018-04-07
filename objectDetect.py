@@ -38,9 +38,23 @@ rightMotor_backward = [[0,0,0,1],
 	[1,0,0,0],
 	[1,0,0,1]]
 
-leftMotor_forward = rightMotor_backward
-leftMotor_backward = rightMotor_forward
+leftMotor_forward = [[0,0,0,1],
+	[0,0,1,1],
+	[0,0,1,0],
+	[0,1,1,0],
+	[0,1,0,0],
+	[1,1,0,0],
+	[1,0,0,0],
+	[1,0,0,1]]
 
+leftMotor_backward = [[1,0,0,0],
+	[1,1,0,0],
+	[0,1,0,0],
+	[0,1,1,0],
+	[0,0,1,0],
+	[0,0,1,1],
+	[0,0,0,1],
+	[1,0,0,1]]
 
 def moveForward():
 	rightMotor_control(rightMotor_forward)
