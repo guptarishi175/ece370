@@ -41,12 +41,12 @@ def normalize(mask, x, y):
 	return (xPrime, yPrime)
 
 
-def talker():
-	pub = rospy.Publisher('centerCoord', Vector3, queue_size=10)
-	rospy.init_node('camera', anonymous=True)
-	while not rospy.is_shutdown():
-		center_coord_msg = Vector3()
-		center_coord_msg.x = 
+#def talker():
+#	pub = rospy.Publisher('centerCoord', Vector3, queue_size=10)
+#	rospy.init_node('camera', anonymous=True)
+#	while not rospy.is_shutdown():
+#		center_coord_msg = Vector3()
+#		center_coord_msg.x = 
 
 cap = cv2.VideoCapture(0)
 
