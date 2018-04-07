@@ -119,6 +119,7 @@ def normalize(mask, x, y):
 	return (xPrime, yPrime)
 
 
+
 def talker():
 	pub = rospy.Publisher('centerCoord', Vector3, queue_size=10)
 	rospy.init_node('camera', anonymous=True)
