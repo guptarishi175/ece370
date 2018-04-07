@@ -1,11 +1,89 @@
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from geometry_msgs.msg import Vector3
-#hello
+import sys
 import time
 import cv2
 import numpy as np
 import rospy
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BOARD)
+
+rightmotor = [7,11,13,15]
+leftmotor = [29, 31, 33, 35]
+
+for pin in rightmotor:
+	GPIO.setup(pin, GPIO.OUT)
+	GPIO.output(pin, 0)
+for pin in leftmotor:
+	GPIO.setup(pin, GPIO.OUT)
+	GPIO.output(pin, 0)
+
+rightMotor_forward = [[1,0,0,0],
+	[1,1,0,0],
+	[0,1,0,0],
+	[0,1,1,0],
+	[0,0,1,0],
+	[0,0,1,1],
+	[0,0,0,1],
+	[1,0,0,1]]
+
+rightMotor_backward = [[0,0,0,1],
+	[0,0,1,1],
+	[0,0,1,0],
+	[0,1,1,0],
+	[0,1,0,0],
+	[1,1,0,0],
+	[1,0,0,0],
+	[1,0,0,1]]
+
+leftMotor_forward = rightMotor_backward
+leftMotor_backward = rightMotor_forward
+
+
+def moveForward():
+	rightMotor_control(rightMotor_forward)
+	leftMotor_control(leftMotor_forward)
+
+def moveBackward():
+	rightMotor_control(rightMotor_backward)
+	leftMotor_control(leftMotor_backward)
+
+def turnRight():
+	rightMotor_control(rightMotor_forward)
+
+def turnLeft():
+	leftMotor_control(leftMotor_forward)
+
+def reverseLeft():
+	rightMotor_control(rightMotor_backward)
+
+def reverseRight():
+	leftMotor_control(leftMotor_backward)
+
+def scan_circle():
+	rightMotor_control(rightMotor_forward)
+	leftMotor_control(leftMotor_backward)
+
+def rightMotor_control(sequence):
+	while True:
+		for i in range(512):
+			for halfstep in range(8):
+				for pin in range(4):
+					GPIO.output(rightmotor[pin], sequence[halfstep][pin])
+			time.sleep(0.001)
+
+def leftMotor_control(sequence):
+	while True:
+		for i in range(512):
+			for halfstep in range(8):
+				for pin in range(4):
+					GPIO.output(leftmotor[pin], sequence[halfstep][pin])
+			time.sleep(0.001)
+
+
+
 
 def getCenter(mask):
 	M = cv2.moments(mask)
