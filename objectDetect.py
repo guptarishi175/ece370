@@ -13,6 +13,8 @@ GPIO.setmode(GPIO.BOARD)
 rightmotor = [7,11,13,15]
 leftmotor = [29, 31, 33, 35]
 
+kp = 1
+
 for pin in rightmotor:
 	GPIO.setup(pin, GPIO.OUT)
 	GPIO.output(pin, 0)
@@ -97,7 +99,9 @@ def leftMotor_control(sequence):
 			time.sleep(0.001)
 
 
-
+def doControl(thetaDis, theta):
+	e = thetaDis - theta
+	return e*kp
 
 def getCenter(mask):
 	M = cv2.moments(mask)
@@ -165,6 +169,9 @@ cap = cv2.VideoCapture(0)
 lowerbound = np.array([105, 100, 100], np.uint8)
 upperbound = np.array([127, 255, 255], np.uint8)
 	
+
+
+
 
 if __name__ == '__main__':
 	try:
