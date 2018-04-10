@@ -42,12 +42,25 @@ leftmotor_forward = [ [0,0,0,1],
 rightmotor_backward = leftmotor_forward
 leftmotor_backward = rightmotor_forward
 
-def motorControl(motor, wheel_directon):
-	for halfstep in range(8):
-		for pin in range(4):
-			GPIO.output(motor[pin], wheel_direction[halfstep][pin])
-		time.sleep(0.001)
+def motorControl(motor, wheel_direction):
+	for i in range(64):	
+		for halfstep in range(8):
+			for pin in range(4):
+				GPIO.output(motor[pin], wheel_direction[halfstep][pin])
+			time.sleep(0.001)
 
+def moveForward():
+	for i in range(64):
+		for halfstep in range(8):
+			for pin in range(4):
+				GPIO.output(rightmotor[pin], rightmotor_forward[halfstep][pin])
+				GPIO.output(leftmotor[pin], leftmotor_forward[halfstep][pin])
+			time.sleep(0.001)
+
+def doControl(des, act):
+	global kp
+	e = des - act
+	return e*kp
 
 def callback(data):
 	global pub_data
@@ -61,7 +74,16 @@ def listener():
 	rate = rospy.Rate(30)
 	while not rospy.is_shutdown():
 		rospy.loginfo("--- OLD --- x = " + str(pub_data.x) + " y = " + str(pub_data.y))
+		err = doControl(0.0, pub_data.x)
+		if err <= 1.0 and err >= -1.0:
+			moveForward()
+		if err > 1.0 :
+			motorControl(rightmotor, rightmotor_forward)
+		if err < -1.0 :
+			motorControl(leftmotor, leftmotor_forward)
+			
 		rate.sleep()
+
 
 if __name__ == '__main__':
 	listener()
