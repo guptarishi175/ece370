@@ -5,6 +5,7 @@ from geometry_msgs.msg import Vector3
 import sys
 
 pub_data = Vector3()
+err = 0.0
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -64,22 +65,31 @@ def doControl(des, act):
 
 def callback(data):
 	global pub_data
+	global err
 	pub_data = data
 	rospy.loginfo("x = " + str(data.x) + " y = " + str(data.y))
+	#err = doControl(0.0, data.x)
+	#if err <= 1.0 and err>= -1.0:
+	#	moveForward()
+	#if err > 1.0 :
+	#	motorControl(rightmotor, rightmotor_forward)
+	#if err < -1.0 :
+	#	motorControl(leftmotor, leftmotor_forward)
 
 def listener():
 	global pub_data
 	rospy.init_node('camera_listener', anonymous = True)
 	rospy.Subscriber('centerCoord', Vector3, callback)
 	rate = rospy.Rate(30)
+	
 	while not rospy.is_shutdown():
 		rospy.loginfo("--- OLD --- x = " + str(pub_data.x) + " y = " + str(pub_data.y))
 		err = doControl(0.0, pub_data.x)
-		if err <= 1.0 and err >= -1.0:
+		if err <= 10.0 and err >= -10.0:
 			moveForward()
-		if err > 1.0 :
+		if err > 10.0 :
 			motorControl(rightmotor, rightmotor_forward)
-		if err < -1.0 :
+		if err < -10.0 :
 			motorControl(leftmotor, leftmotor_forward)
 			
 		rate.sleep()
