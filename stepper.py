@@ -85,11 +85,11 @@ def listener():
 	while not rospy.is_shutdown():
 		rospy.loginfo("--- OLD --- x = " + str(pub_data.x) + " y = " + str(pub_data.y))
 		err = doControl(0.0, pub_data.x)
-		if err <= 10.0 and err >= -10.0:
+		if err <= 5.0 and err >= -5.0:
 			moveForward()
-		if err > 10.0 :
+		if err > 5.0 :
 			motorControl(rightmotor, rightmotor_forward)
-		if err < -10.0 :
+		if err < -5.0 :
 			motorControl(leftmotor, leftmotor_forward)
 			
 		rate.sleep()
